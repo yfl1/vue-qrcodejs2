@@ -1,5 +1,9 @@
 # vue-qrcodejs2
 
+#### master：gen a qrcode with logo
+#### general：gen a qrcode without logo
+ ![image](./src/assets/qr.jpg)
+
 ## Project setup
 ```
 npm install

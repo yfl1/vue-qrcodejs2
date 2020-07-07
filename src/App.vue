@@ -1,7 +1,7 @@
 <template>
   <div id="app">
     <qrcode></qrcode>
-    <button @click="show=!show">点击生成</button>
+    <button @click="show=!show">generate a new qrcode</button>
     <qrcode v-if="show"></qrcode>
   </div>
 </template>

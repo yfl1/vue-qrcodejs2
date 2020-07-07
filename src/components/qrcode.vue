@@ -6,12 +6,11 @@
  -->
  <template>
   <div class="qrcode" :style="{width:size,height:size}">
-    <canvas ref="mycanvas" width="100" height="100" style="background-color:#eee"></canvas>
+    <div id="qrcode" :style="qrcodeStyle" ref="qrcode"></div>
   </div>
 </template>
 <script>
 import QRcode from "qrcodejs2";
-import logoUrl from "../assets/logo.png";
 export default {
   name: "qrcode",
   props: {
@@ -29,66 +28,37 @@ export default {
       qrcode: null
     };
   },
-  watch: {},
+  watch: {
+    // text: function() {
+    //   if (this.qrcode) {
+    //     this.qrcode.clear();
+    //     this.qrcode.makeCode(this.text);
+    //   }
+    // }
+  },
   computed: {
     qrcodeStyle: function() {
       return {
         height: this.size + "px",
-        width: this.size + "px"
+        width: this.size + "px",
+        position: "static"
       };
     }
   },
-  mounted: async function() {
-    await this.genQRcode();
-    this.drawQrcodeContainLogo();
+  mounted: function() {
+    this.genQRcode();
   },
   methods: {
-    genQRcode: async function() {
-      return new Promise((resolve, reject) => {
-        var element = document.createElement("div");
-        var qrcode = new QRcode(element, {
-          text: this.text,
-          width: this.size,
-          height: this.size,
-          colorDark: "#000000",
-          colorLight: "#ffffff",
-          correctLevel: QRcode.CorrectLevel.H
-        });
-        if (element.getElementsByTagName("canvas")[0]) {
-          this.qrcode = element;
-          resolve();
-        }
+    genQRcode: function() {
+      var qrcode = new QRcode(this.$refs.qrcode, {
+        text: this.text,
+        width: this.size,
+        height: this.size,
+        colorDark: "#000000",
+        colorLight: "#ffffff",
+        correctLevel: QRcode.CorrectLevel.H
       });
-    },
-    drawQrcodeContainLogo: async function() {
-      const rectSize = 40;
-      const rectPos = (this.size - rectSize) / 2;
-      const logoSize = 30;
-      const logoPos = (this.size - logoSize) / 2;
-      const qr = await this.getQrImage();
-      const logo = await this.getLogoImage();
-      var ctx = this.$refs.mycanvas.getContext("2d");
-      ctx.fillStyle = "#fff";
-      ctx.drawImage(qr, 0, 0, 100, 100);
-      ctx.fillRect(rectPos, rectPos, rectSize, rectSize);
-      ctx.drawImage(logo, logoPos, logoPos, logoSize, logoSize);
-    },
-    getQrImage: async function() {
-      return new Promise((resolve, reject) => {
-        var qr = this.qrcode.getElementsByTagName("img")[0];
-        qr.onload = () => {
-          resolve(qr);
-        };
-      });
-    },
-    getLogoImage: async function() {
-      return new Promise((resolve, reject) => {
-        var logo = new Image();
-        logo.src = logoUrl;
-        logo.onload = () => {
-          resolve(logo);
-        };
-      });
+      this.qrcode = qrcode;
     }
   }
 };

@@ -6,7 +6,6 @@
  -->
  <template>
   <div class="qrcode" :style="{width:size,height:size}">
-    <div id="qrcode" :style="qrcodeStyle" ref="qrcode" style="display:none"></div>
     <canvas ref="mycanvas" width="100" height="100" style="background-color:#eee"></canvas>
   </div>
 </template>
@@ -30,31 +29,24 @@ export default {
       qrcode: null
     };
   },
-  watch: {
-    // text: function() {
-    //   if (this.qrcode) {
-    //     this.qrcode.clear();
-    //     this.qrcode.makeCode(this.text);
-    //   }
-    // }
-  },
+  watch: {},
   computed: {
     qrcodeStyle: function() {
       return {
         height: this.size + "px",
-        width: this.size + "px",
-        position: "relative"
+        width: this.size + "px"
       };
     }
   },
   mounted: async function() {
     await this.genQRcode();
-    this.drawLogo();
+    this.drawQrcodeContainLogo();
   },
   methods: {
     genQRcode: async function() {
       return new Promise((resolve, reject) => {
-        var qrcode = new QRcode(this.$refs.qrcode, {
+        var element = document.createElement("div");
+        var qrcode = new QRcode(element, {
           text: this.text,
           width: this.size,
           height: this.size,
@@ -62,33 +54,41 @@ export default {
           colorLight: "#ffffff",
           correctLevel: QRcode.CorrectLevel.H
         });
-        if (this.$refs.qrcode.getElementsByTagName("img")[0]) {
-          this.qrcode = qrcode;
+        if (element.getElementsByTagName("canvas")[0]) {
+          this.qrcode = element;
           resolve();
         }
       });
     },
-    drawLogo: function() {
+    drawQrcodeContainLogo: async function() {
       const rectSize = 40;
       const rectPos = (this.size - rectSize) / 2;
       const logoSize = 30;
       const logoPos = (this.size - logoSize) / 2;
-      const logoSrc = logoUrl;
-
+      const qr = await this.getQrImage();
+      const logo = await this.getLogoImage();
       var ctx = this.$refs.mycanvas.getContext("2d");
-      ctx.fillStyle = "#ffffff";
-
-      var qrImg = this.$refs.qrcode.getElementsByTagName("img")[0];
-      var logo = new Image();
-      logo.src = logoSrc;
-
-      qrImg.onload = function() {
-        ctx.drawImage(qrImg, 0, 0, 100, 100);
-      };
-      logo.onload = function() {
-        ctx.fillRect(rectPos, rectPos, rectSize, rectSize);
-        ctx.drawImage(logo, logoPos, logoPos, logoSize, logoSize);
-      };
+      ctx.fillStyle = "#fff";
+      ctx.drawImage(qr, 0, 0, 100, 100);
+      ctx.fillRect(rectPos, rectPos, rectSize, rectSize);
+      ctx.drawImage(logo, logoPos, logoPos, logoSize, logoSize);
+    },
+    getQrImage: async function() {
+      return new Promise((resolve, reject) => {
+        var qr = this.qrcode.getElementsByTagName("img")[0];
+        qr.onload = () => {
+          resolve(qr);
+        };
+      });
+    },
+    getLogoImage: async function() {
+      return new Promise((resolve, reject) => {
+        var logo = new Image();
+        logo.src = logoUrl;
+        logo.onload = () => {
+          resolve(logo);
+        };
+      });
     }
   }
 };

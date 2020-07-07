@@ -1,6 +1,8 @@
 <template>
   <div id="app">
     <qrcode></qrcode>
+    <button @click="show=!show">点击生成</button>
+    <qrcode v-if="show"></qrcode>
   </div>
 </template>
 
@@ -10,6 +12,11 @@ export default {
   name: "App",
   components: {
     qrcode
+  },
+  data: function() {
+    return {
+      show: false
+    };
   }
 };
 </script>

@@ -1,5 +1,7 @@
 # vue-qrcodejs2
 
+#### demo: https://yfl1.github.io/vue-qrcodejs2/
+
 #### master：gen a qrcode with logo
  ![image](https://github.com/yfl1/vue-qrcodejs2/raw/master/src/assets/qrcode.jpg)
 

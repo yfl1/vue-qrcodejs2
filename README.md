@@ -2,10 +2,10 @@
 
 #### demo: https://yfl1.github.io/vue-qrcodejs2/
 
-#### master：gen a qrcode with logo
+#### master branch：gen a qrcode with logo
  ![image](https://github.com/yfl1/vue-qrcodejs2/raw/master/src/assets/qrcode.jpg)
 
-#### general：gen a qrcode without logo
+#### general branch：gen a qrcode without logo
  ![image](./src/assets/qr.jpg)
 
 ## Project setup
